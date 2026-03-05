@@ -135,6 +135,19 @@ export function parseSource(input: string): ParsedSource {
     input = alias;
   }
 
+  // Prefix shorthand: github:owner/repo -> owner/repo (handled by existing shorthand logic)
+  // Also supports github:owner/repo/subpath and github:owner/repo@skill
+  const githubPrefixMatch = input.match(/^github:(.+)$/);
+  if (githubPrefixMatch) {
+    return parseSource(githubPrefixMatch[1]!);
+  }
+
+  // Prefix shorthand: gitlab:owner/repo -> https://gitlab.com/owner/repo
+  const gitlabPrefixMatch = input.match(/^gitlab:(.+)$/);
+  if (gitlabPrefixMatch) {
+    return parseSource(`https://gitlab.com/${gitlabPrefixMatch[1]!}`);
+  }
+
   // Local path: absolute, relative, or current directory
   if (isLocalPath(input)) {
     const resolvedPath = resolve(input);

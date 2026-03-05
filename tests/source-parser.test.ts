@@ -356,3 +356,48 @@ describe('Source aliases', () => {
     expect(result.url).toBe('https://github.com/coinbase/agentic-wallet-skills.git');
   });
 });
+
+describe('Prefix shorthand tests', () => {
+  describe('github: prefix', () => {
+    it('github:owner/repo - basic', () => {
+      const result = parseSource('github:owner/repo');
+      expect(result.type).toBe('github');
+      expect(result.url).toBe('https://github.com/owner/repo.git');
+      expect(result.subpath).toBeUndefined();
+    });
+
+    it('github:owner/repo/subpath', () => {
+      const result = parseSource('github:owner/repo/skills/my-skill');
+      expect(result.type).toBe('github');
+      expect(result.url).toBe('https://github.com/owner/repo.git');
+      expect(result.subpath).toBe('skills/my-skill');
+    });
+
+    it('github:owner/repo@skill-name', () => {
+      const result = parseSource('github:owner/repo@my-skill');
+      expect(result.type).toBe('github');
+      expect(result.url).toBe('https://github.com/owner/repo.git');
+      expect(result.skillFilter).toBe('my-skill');
+    });
+
+    it('github:googleworkspace/cli', () => {
+      const result = parseSource('github:googleworkspace/cli');
+      expect(result.type).toBe('github');
+      expect(result.url).toBe('https://github.com/googleworkspace/cli.git');
+    });
+  });
+
+  describe('gitlab: prefix', () => {
+    it('gitlab:owner/repo - basic', () => {
+      const result = parseSource('gitlab:owner/repo');
+      expect(result.type).toBe('gitlab');
+      expect(result.url).toBe('https://gitlab.com/owner/repo.git');
+    });
+
+    it('gitlab:group/subgroup/repo', () => {
+      const result = parseSource('gitlab:group/subgroup/repo');
+      expect(result.type).toBe('gitlab');
+      expect(result.url).toBe('https://gitlab.com/group/subgroup/repo.git');
+    });
+  });
+});
